@@ -1,10 +1,17 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app_firebase/components/my_button.dart';
 import 'package:flutter_chat_app_firebase/components/my_text_field.dart';
 
 class LoginPage extends StatelessWidget {
-  const LoginPage({super.key});
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  LoginPage({super.key});
+
+  // login method
+  void login() {}
 
   @override
   Widget build(BuildContext context) {
@@ -34,6 +41,7 @@ class LoginPage extends StatelessWidget {
             MyTextField(
               hintText: "Email",
               obscuredText: false,
+              controller: _emailController,
             ),
             SizedBox(
               height: 20,
@@ -42,7 +50,30 @@ class LoginPage extends StatelessWidget {
             MyTextField(
               hintText: 'Password',
               obscuredText: true,
-            )
+              controller: _passwordController,
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            //Login Button
+            MyButton(
+              buttonText: "Login",
+              onTap: login,
+            ),
+            SizedBox(
+              height: 25,
+            ),
+            //register Button
+            Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text(
+                'Don\'t have an account? ',
+                style: TextStyle(color: Theme.of(context).colorScheme.primary),
+              ),
+              Text('Register Now',
+                  style: TextStyle(
+                      color: Theme.of(context).colorScheme.primary,
+                      fontWeight: FontWeight.bold)),
+            ])
           ],
         ),
       ),
