@@ -1,4 +1,4 @@
-// ignore_for_file: prefer_const_constructors
+// ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app_firebase/components/my_button.dart';
@@ -8,7 +8,10 @@ class LoginPage extends StatelessWidget {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  LoginPage({super.key});
+  // on tap go to the register page
+  final void Function()? onTap;
+
+  LoginPage({super.key, required this.onTap});
 
   // login method
   void login() {}
@@ -69,10 +72,13 @@ class LoginPage extends StatelessWidget {
                 'Don\'t have an account? ',
                 style: TextStyle(color: Theme.of(context).colorScheme.primary),
               ),
-              Text('Register Now',
-                  style: TextStyle(
-                      color: Theme.of(context).colorScheme.primary,
-                      fontWeight: FontWeight.bold)),
+              GestureDetector(
+                onTap: onTap,
+                child: Text('Register Now',
+                    style: TextStyle(
+                        color: Theme.of(context).colorScheme.primary,
+                        fontWeight: FontWeight.bold)),
+              ),
             ])
           ],
         ),
