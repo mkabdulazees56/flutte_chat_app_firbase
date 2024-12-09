@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_chat_app_firebase/pages/login_page.dart';
+import 'package:flutter_chat_app_firebase/pages/register_page.dart';
 import 'package:flutter_chat_app_firebase/theme/light_mode.dart';
 
 void main() {
@@ -16,7 +17,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: lightMode,
-      home: LoginPage(),
+      home: RegisterPage(),
     );
   }
 }
