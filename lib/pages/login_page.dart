@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app_firebase/auth/auth_service.dart';
 import 'package:flutter_chat_app_firebase/components/my_button.dart';
 import 'package:flutter_chat_app_firebase/components/my_text_field.dart';
 
@@ -14,7 +15,22 @@ class LoginPage extends StatelessWidget {
   LoginPage({super.key, required this.onTap});
 
   // login method
-  void login() {}
+  void login(BuildContext context) async {
+    // auth service
+
+    final authService = AuthService();
+
+    try {
+      await authService.signInWithEmailPassword(
+          _emailController.text, _passwordController.text);
+    } catch (e) {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text(e.toString()),
+              ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -59,10 +75,7 @@ class LoginPage extends StatelessWidget {
               height: 25,
             ),
             //Login Button
-            MyButton(
-              buttonText: "Login",
-              onTap: login,
-            ),
+            MyButton(buttonText: "Login", onTap: () => login(context)),
             SizedBox(
               height: 25,
             ),
