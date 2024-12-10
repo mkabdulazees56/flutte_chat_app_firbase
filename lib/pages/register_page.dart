@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:flutter/material.dart';
+import 'package:flutter_chat_app_firebase/auth/auth_service.dart';
 import 'package:flutter_chat_app_firebase/components/my_button.dart';
 import 'package:flutter_chat_app_firebase/components/my_text_field.dart';
 
@@ -15,7 +16,33 @@ class RegisterPage extends StatelessWidget {
 
   RegisterPage({super.key, required this.onTap});
   // register method
-  void register() {}
+  void register(BuildContext context) {
+    //get auth service
+    final _auth = AuthService();
+
+    // if password match create user
+    if (_passwordController.text == _confirmPasswordController.text) {
+      try {
+        _auth.signUpWithEmailPassword(
+            _emailController.text, _passwordController.text);
+      } catch (e) {
+        showDialog(
+            context: context,
+            builder: (context) => AlertDialog(
+                  title: Text(e.toString()),
+                ));
+      }
+    }
+
+    // if password not match show error message
+    else {
+      showDialog(
+          context: context,
+          builder: (context) => AlertDialog(
+                title: Text('Passwords do not match'),
+              ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -70,7 +97,7 @@ class RegisterPage extends StatelessWidget {
             //Login Button
             MyButton(
               buttonText: "Register",
-              onTap: register,
+              onTap: () => register(context),
             ),
             SizedBox(
               height: 25,
