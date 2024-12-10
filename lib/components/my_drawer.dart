@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app_firebase/auth/auth_service.dart';
+import 'package:flutter_chat_app_firebase/services/auth/auth_service.dart';
 import 'package:flutter_chat_app_firebase/pages/settings%20_page.dart';
 
 class MyDrawer extends StatelessWidget {

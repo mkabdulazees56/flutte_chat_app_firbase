@@ -1,7 +1,7 @@
 // ignore_for_file: prefer_const_constructors, must_be_immutable
 
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app_firebase/auth/auth_service.dart';
+import 'package:flutter_chat_app_firebase/services/auth/auth_service.dart';
 import 'package:flutter_chat_app_firebase/components/my_button.dart';
 import 'package:flutter_chat_app_firebase/components/my_text_field.dart';
 
