@@ -10,6 +10,8 @@ import 'package:flutter_chat_app_firebase/services/chat/chat_services.dart';
 class HomePage extends StatelessWidget {
   HomePage({super.key});
 
+//chat and auth services
+
   final ChatService _chatService = ChatService();
   final AuthService _authService = AuthService();
 
@@ -27,7 +29,7 @@ class HomePage extends StatelessWidget {
   // build list of users for the current logged in user
   Widget _buildUserList() {
     return StreamBuilder(
-        stream: _chatService.getUserStream(),
+        stream: _chatService.getUsersStream(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {
             return const Text('Error');
@@ -49,16 +51,20 @@ class HomePage extends StatelessWidget {
 
   Widget _buildUserListItem(
       Map<String, dynamic> userData, BuildContext context) {
-    return UserTile(
-      text: userData['email'],
-      onTap: () {
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => ChatPage(
-                      receiverEmail: userData['email'],
-                    )));
-      },
-    );
+    if (userData['email'] != _authService.getCurrentUser()!.email) {
+      return UserTile(
+        text: userData['email'],
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => ChatPage(
+                        receiverEmail: userData['email'],
+                      )));
+        },
+      );
+    } else {
+      return Container();
+    }
   }
 }
