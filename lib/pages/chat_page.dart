@@ -1,9 +1,8 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_const_constructors
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_chat_app_firebase/components/chat_bubble.dart';
-import 'package:flutter_chat_app_firebase/components/my_text_field.dart';
 import 'package:flutter_chat_app_firebase/services/auth/auth_service.dart';
 import 'package:flutter_chat_app_firebase/services/chat/chat_services.dart';
 
@@ -24,7 +23,7 @@ class ChatPage extends StatelessWidget {
   void sendMessage() async {
     if (_messageController.text.isNotEmpty) {
       await _chatService.sendMessage(receiverID, _messageController.text);
-      // clear text field after sending message
+      // Clear text field after sending message
       _messageController.clear();
     }
   }
@@ -33,92 +32,129 @@ class ChatPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(receiverEmail),
+        backgroundColor: Colors.green,
+        title: Text(
+          receiverEmail,
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+        ),
+        centerTitle: true,
+        elevation: 5,
       ),
-      body: Column(
-        children: [
-          // all the messages
-          Expanded(child: _buildMessageList()),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.white, Colors.green.shade50],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Column(
+          children: [
+            // Messages List
+            Expanded(child: _buildMessageList()),
 
-          // user input
-          _buildUserInput(),
-        ],
+            // Input Field
+            buildUserInput(
+              controller: _messageController,
+              onSend: sendMessage,
+            ),
+          ],
+        ),
       ),
     );
   }
 
-// build the message list
+  // Build the message list
   Widget _buildMessageList() {
     String senderID = _authService.getCurrentUser()!.uid;
     return StreamBuilder(
-        stream: _chatService.getMessages(receiverID, senderID),
-        builder: (context, snapshot) {
-          // errors
-          if (snapshot.hasError) {
-            return const Text('Error');
-          }
+      stream: _chatService.getMessages(receiverID, senderID),
+      builder: (context, snapshot) {
+        // Error Handling
+        if (snapshot.hasError) {
+          return Center(
+              child: Text('Error loading messages',
+                  style: TextStyle(color: Colors.red)));
+        }
 
-          // loading
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          }
+        // Loading State
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
 
-          // return list view
-          return ListView(
-            children: snapshot.data!.docs
-                .map((doc) => _buildMessageItem(doc))
-                .toList(),
-          );
-        });
+        // Messages List
+        return ListView(
+          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          children:
+              snapshot.data!.docs.map((doc) => _buildMessageItem(doc)).toList(),
+        );
+      },
+    );
   }
 
-// build message items
+  // Build individual message item
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-// is current user
-
     bool isCurrentUser = data['senderID'] == _authService.getCurrentUser()!.uid;
-    var alignment =
-        isCurrentUser ? Alignment.centerRight : Alignment.centerLeft;
-    return Container(
-        alignment: alignment,
-        child: ChatBubble(
-          message: data['message'],
-          isCurrentUser: isCurrentUser,
-        ));
+    return ChatBubble(
+      message: data['message'],
+      isCurrentUser: isCurrentUser,
+    );
   }
 
-  // build message input
-
-  Widget _buildUserInput() {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 50.0),
+  // Beautified Input Field and Button
+  Widget buildUserInput({
+    required TextEditingController controller,
+    required VoidCallback onSend,
+  }) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      color: Colors.white,
       child: Row(
         children: [
+          // Input Field
           Expanded(
-            child: MyTextField(
-              controller: _messageController,
-              hintText: "Type a message...",
-              obscuredText: false,
+            child: TextField(
+              controller: controller,
+              decoration: InputDecoration(
+                contentPadding:
+                    EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                hintText: "Type a message...",
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(25),
+                  borderSide: BorderSide.none,
+                ),
+                suffixIcon: Icon(Icons.insert_emoticon, color: Colors.grey),
+              ),
             ),
           ),
 
-          // send button
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
-            margin: const EdgeInsets.only(right: 25),
-            child: IconButton(
-              onPressed: sendMessage,
-              icon: Icon(
-                Icons.arrow_upward,
+          // Send Button
+          SizedBox(width: 8),
+          GestureDetector(
+            onTap: onSend,
+            child: Container(
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.green,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.green.withOpacity(0.5),
+                    blurRadius: 8,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: Icon(
+                Icons.send,
                 color: Colors.white,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
